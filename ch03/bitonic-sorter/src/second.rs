@@ -8,9 +8,11 @@ pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
         };
         Ok(())
     } else {
-        Err(format!("The length of x is not a number of two. (x.len(): {})", x.len()))
+        Err(format!(
+            "The length of x is not a number of two. (x.len(): {})",
+            x.len()
+        ))
     }
-    
 }
 
 fn do_sort<T: Ord>(x: &mut [T], up: bool) {
