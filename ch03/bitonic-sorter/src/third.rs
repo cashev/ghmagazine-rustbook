@@ -10,18 +10,23 @@ pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
 use std::cmp::Ordering;
 
 pub fn sort_by<T, F>(x: &mut [T], comparator: &F) -> Result<(), String>
-    where F: Fn(&T, &T) -> Ordering
+where
+    F: Fn(&T, &T) -> Ordering,
 {
     if x.len().is_power_of_two() {
         do_sort(x, true, comparator);
         Ok(())
     } else {
-        Err(format!("The length of x is not a power of two. (x.len(): {})", x.len()))
+        Err(format!(
+            "The length of x is not a power of two. (x.len(): {})",
+            x.len()
+        ))
     }
 }
 
 fn do_sort<T, F>(x: &mut [T], up: bool, comparator: &F)
-    where F: Fn(&T, &T) -> Ordering
+where
+    F: Fn(&T, &T) -> Ordering,
 {
     if x.len() > 1 {
         let mid_point = x.len() / 2;
@@ -32,7 +37,8 @@ fn do_sort<T, F>(x: &mut [T], up: bool, comparator: &F)
 }
 
 fn sub_sort<T, F>(x: &mut [T], up: bool, comparator: &F)
-    where F: Fn(&T, &T) -> Ordering
+where
+    F: Fn(&T, &T) -> Ordering,
 {
     if x.len() > 1 {
         compare_and_swap(x, up, comparator);
@@ -43,7 +49,8 @@ fn sub_sort<T, F>(x: &mut [T], up: bool, comparator: &F)
 }
 
 fn compare_and_swap<T, F>(x: &mut [T], up: bool, comparator: &F)
-    where F: Fn(&T, &T) -> Ordering
+where
+    F: Fn(&T, &T) -> Ordering,
 {
     let swap_condition = if up {
         Ordering::Greater
@@ -61,8 +68,8 @@ fn compare_and_swap<T, F>(x: &mut [T], up: bool, comparator: &F)
 #[cfg(test)]
 mod tests {
     use super::{sort, sort_by};
+    use crate::utils::{is_sorted_ascending, is_sorted_descending, new_u32_vec};
     use crate::SortOrder::*;
-    use crate::utils::{new_u32_vec, is_sorted_ascending, is_sorted_descending};
 
     #[test]
     fn sort_u32_ascending() {
@@ -171,10 +178,7 @@ mod tests {
         let mut x = vec![&taro, &hanako, &kyoko, &ryosuke];
         let expected = vec![&hanako, &kyoko, &taro, &ryosuke];
 
-        assert_eq!(
-            sort_by(&mut x, &|a, b| a.age.cmp(&b.age)),
-            Ok(())
-        );
+        assert_eq!(sort_by(&mut x, &|a, b| a.age.cmp(&b.age)), Ok(()));
 
         assert_eq!(x, expected);
     }
@@ -190,7 +194,9 @@ mod tests {
         let expected = vec![&ryosuke, &kyoko, &hanako, &taro];
 
         assert_eq!(
-            sort_by(&mut x, &|a, b| a.last_name.cmp(&b.last_name)
+            sort_by(&mut x, &|a, b| a
+                .last_name
+                .cmp(&b.last_name)
                 .then_with(|| a.first_name.cmp(&b.first_name))),
             Ok(())
         );
