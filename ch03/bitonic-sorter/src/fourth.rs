@@ -50,13 +50,20 @@ where
 
 fn sub_sort<T, F>(x: &mut [T], up: bool, comparator: &F)
 where
-    F: Fn(&T, &T) -> Ordering,
+    T: Send,
+    F: Sync + Fn(&T, &T) -> Ordering,
 {
     if x.len() > 1 {
         compare_and_swap(x, up, comparator);
         let mid_point = x.len() / 2;
-        sub_sort(&mut x[..mid_point], up, comparator);
-        sub_sort(&mut x[mid_point..], up, comparator);
+        let (first, second) = x.split_at_mut(mid_point);
+        if mid_point >= PARALLEL_THRESHOLD {
+            rayon::join(|| sub_sort(first, up, comparator),
+                        || sub_sort(second, up, comparator));
+        } else {
+            sub_sort(first, up, comparator);
+            sub_sort(second, up, comparator);
+        }
     }
 }
 
