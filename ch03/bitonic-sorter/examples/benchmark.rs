@@ -1,13 +1,13 @@
 use num_cpus;
 
-use bitonic_sorter::SortOrder;
-use bitonic_sorter::third::sort as seq_sort;
 use bitonic_sorter::fourth::sort as par_sort;
+use bitonic_sorter::third::sort as seq_sort;
 use bitonic_sorter::utils::{is_sorted_ascending, new_u32_vec};
+use bitonic_sorter::SortOrder;
 
-use std::{env, f64};
 use std::str::FromStr;
 use std::time::Instant;
+use std::{env, f64};
 
 fn main() {
     if let Some(n) = env::args().nth(1) {
